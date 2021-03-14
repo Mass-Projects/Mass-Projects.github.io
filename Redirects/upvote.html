@@ -1,1 +1,23 @@
+<!doctype html>
+<a href="javascript:openSite()">To continue to your content click to vote our server!</a>
+<script>
+var links = [
+              "https://discordservers.me/servers/MassProjects",
+              "https://discordservers.com/server/771641009209475073",
+              "https://discordbotlist.com/servers/mass-projects-make-the-impossible-happen",
+              "https://discordlist.io/servers/Mass-Projects-Make-the-impossible-happen"
+              "https://top.gg/servers/771641009209475073"]
 
+            function openSite() {
+              // get a random number between 0 and the number of links
+              var randIdx = Math.random() * links.length;
+              // round it, so it can be used as array index
+              randIdx = parseInt(randIdx, 10);
+              // construct the link to be opened
+              var link = 'http://' + links[randIdx];
+              return link;
+              };
+             
+    
+    document.getElementById("link").innerHTML = openSite();
+</script>
