@@ -1,1 +1,39 @@
+body {
+    background-color: #2d2d30;
+    color: #ccd5dc;
+}
 
+.header { 
+    background-color: #2d2d30;
+}
+
+.content p {
+    color: #ccd5dc;
+}
+
+.card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	word-wrap: break-word;
+	background-color: #2d2d30;
+	background-clip: border-box;
+	border: 1px solid rgba(247, 247, 247, 0.89);
+	border-radius: .25rem;
+}
+
+.card-header {
+	padding: .75rem 1.25rem;
+	margin-bottom: 0;
+	background-color: rgba(33,37,41,.03);
+	border-bottom: 1px solid rgba(247, 250, 253, 0.11);
+}
+
+p {
+	font-family: roboto,Arial,sans-serif,-apple-system;
+	font-size: 1rem;
+	line-height: 1.4;
+    color: #ccd5dc;
+	font-weight: 400;
+}
