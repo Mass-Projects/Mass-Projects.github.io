@@ -1,0 +1,185 @@
+---
+permalink: v1/jobs
+layout: sidebar
+title: Jobs
+---
+
+# Jobs
+
+Jobs are essentially the intersection of <a href="/v1/employees">an employee</a>, <a href="/v1/compensations">a compensation</a>, and a <a href="/v1/companies">company work location</a>.
+
+## Attributes
+
+| Attribute                     | Type              | Read-Only | Optional | Default | Description
+| :----------                   |:-------------     |:---------:|:--------:|:--------|:-------------
+| `id`                          | Integer           |     X     |          |         | the unique identifier of this job
+| `version`                     | String            |     X     |          |         | version of this object. See <a href="/v1/considerations/versioning">the versioning documentation</a> for a more in depth explaination of versions
+| `employee_id`                 | Integer           |     X     |          |         | id for the employee to which this job belongs
+| `location_id`                 | Integer           |           |          |         | id for this job's work location. Corresponds to one of the company's locations returned via the <a href="/v1/companies">company endpoints</a>.
+| `location`                    | Object            |     X     |          |         | full representation of the location's address
+| `hire_date`                   | String            |           |          |         | when the employee was hired for this job
+| `title`                       | String            |           |    X     | null    | the title for this position
+| `primary`                     | Boolean           |     X     |          |         | whether this is the employee's primary job. The value will be set to true unless an existing job exists for this employee.
+| `rate`                        | String            |     X     |          |         | rate for the current compensation
+| `payment_unit`                | String            |     X     |          |         | payment unit for the current compensation
+| `current_compensation_id`     | Integer           |     X     |          |         | id for the currently active compensation
+| `compensations`               | Array             |     X     |          |         | array of all associated compensations. See the complete <a href="/v1/compensations">compensation documentation</a> for more information.
+
+## Get jobs for an employee
+
+**HTTP Method**: `GET`
+
+**Endpoint**: `/v1/employees/:employee_id/jobs`
+
+**Returns**: Array of all jobs this employee holds.
+
+#### Sample Response Body:
+
+```json
+[
+  {
+    "id": 1123581321345589,
+    "version": "gr78930htutrz444kuytr3s5hgxykuveb523fwl8sir",
+    "employee_id": 1363316536327001,
+    "location_id": 1363316536327002,
+    "location": {
+      "id": 1363316536327002,
+      "street_1": "425 2nd Street",
+      "street_2": "Suite 602",
+      "city": "San Francisco",
+      "state": "CA",
+      "zip": "94107",
+      "country": "USA"
+    },
+    "hire_date": "{{ site.time | date: '%Y' }}-12-11",
+    "title": "Assistant to the Regional Manager",
+    "primary": true,
+    "rate": "70.00",
+    "payment_unit": "Hour",
+    "current_compensation_id": 1363316536327003,
+    "compensations": [
+      {
+        "id": 1363316536327003,
+        "version": "98jr3289h3298hr9329gf9egskt3kagri32qqgiqe3872",
+        "job_id": 1123581321345589,
+        "rate": "70.00",
+        "payment_unit": "Hour",
+        "flsa_status": "Nonexempt",
+        "effective_date": "{{ site.time | date: '%Y' }}-12-11"
+      }
+    ]
+  },
+  {
+    "id": 1123581321345590,
+    "version": "4tvwfa4qjmxvb3rabr4xfejoa3lixwgt4rpbdxe9id9",
+    "employee_id": 1363316536327001,
+    "location_id": 1363316536327002,
+    "location": {
+      "id": 1363316536327002,
+      "street_1": "425 2nd Street",
+      "street_2": "Suite 602",
+      "city": "San Francisco",
+      "state": "CA",
+      "zip": "94107",
+      "country": "USA"
+    },
+    "hire_date": "{{ site.time | date: '%Y' }}-12-11",
+    "title": "Receptionist",
+    "primary": true,
+    "rate": "18.00",
+    "payment_unit": "Hour",
+    "current_compensation_id": 1363316536327004,
+    "compensations": [
+      {
+        "id": 1363316536327004,
+        "version": "98jr3289h3298hr9329gf9egskt3kagri32qqgiqe3872",
+        "job_id": 1123581321345590,
+        "rate": "45.00",
+        "payment_unit": "Hour",
+        "flsa_status": "Nonexempt",
+        "effective_date": "{{ site.time | date: '%Y' }}-12-11"
+      }
+    ]
+  }
+]
+```
+
+## Get an individual job
+
+**HTTP Method**: `GET`
+
+**Endpoint**: `/v1/jobs/:job_id`
+
+**Returns**: A single job representation
+
+#### Sample Response Body:
+
+
+```json
+{
+  "id": 1123581321345589,
+  "version": "gr78930htutrz444kuytr3s5hgxykuveb523fwl8sir",
+  "employee_id": 1363316536327001,
+  "location_id": 1363316536327002,
+  "location": {
+    "id": 1363316536327002,
+    "street_1": "425 2nd Street",
+    "street_2": "Suite 602",
+    "city": "San Francisco",
+    "state": "CA",
+    "zip": "94107",
+    "country": "USA"
+  },
+  "hire_date": "{{ site.time | date: '%Y' }}-12-11",
+  "title": "Assistant to the Regional Manager",
+  "primary": true,
+  "rate": "70.00",
+  "payment_unit": "Hour",
+  "current_compensation_id": 1363316536327003,
+  "compensations": [
+    {
+      "id": 1363316536327004,
+      "version": "98jr3289h3298hr9329gf9egskt3kagri32qqgiqe3872",
+      "job_id": 1123581321345589,
+      "rate": "70.00",
+      "payment_unit": "Hour",
+      "flsa_status": "Nonexempt",
+      "effective_date": "{{ site.time | date: '%Y' }}-12-11"
+    }
+  ]
+}
+```
+
+## Update an individual job
+
+**HTTP Method**: `PUT`
+
+**Endpoint**: `/v1/jobs/:job_id`
+
+**Returns**: An updated job representation or errors which prevented update
+
+### Sample Request Body
+
+```json
+{
+  "version": "gr78930htutrz444kuytr3s5hgxykuveb523fwl8sir",
+  "title": "Assistant Regional Manager"
+}
+```
+
+## Create a Job
+
+**HTTP Method**: `POST`
+
+**Endpoint**: `/v1/employees/:employee_id/jobs`
+
+**Returns**: The new job object or errors which prevented creation
+
+### Sample Request Body
+
+```json
+{
+  "title": "Assistant to the Regional Manager",
+  "hire_date": "{{ site.time | date: '%Y' }}-12-21"
+}
+```

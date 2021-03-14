@@ -1,0 +1,94 @@
+---
+permalink: v1/accounts
+layout: sidebar
+title: Accounts
+---
+
+
+# Accounts
+
+The accounts API is for creating accounts for new customers on Gusto. With
+a minimum amount of information, partners may create a user, company, and the
+related permissions to go from setup onboarding information.
+
+**Note** This endpoint requires authorization via [Token Authentication](/v1/basics/authentication#api-token-authentication) with an API token. Normal OAuth credentials will _not_ allow
+account creation.
+
+## Attributes
+
+| Attribute                             | Type              | Read-Only | Optional | Default | Description
+| :----------                           |:-------------     |:---------:|:--------:|:--------|:-------------
+| `user`                                | Object            |           |          |         | Information for the primary payroll administrator for the new company
+| `user:first_name`                     | String            |           |          |         | First name of the primary payroll administrator
+| `user:last_name`                      | String            |           |          |         | Last name of the primary payroll administrator
+| `user:email`                          | String            |           |          |         | Email address for primary payroll administrator. Will also be used as their login.
+| `user:phone`                          | String            |           |        X |         | Phone number for primary payroll administrator. Must be exactly ten digits.
+| `company`                             | Object            |           |          |         | Information for the new company
+| `company:name`                        | String            |           |          |         | Company name. Must be at least two characters long.
+| `company:trade_name`                  | String            |           |        X |         | Company legal name.
+| `company:ein`                         | String            |           |        X |         | Company's EIN (aka FEIN)
+| `company:states`                      | Array             |           |          |         | List of states (two letter abbreviations) in which the company operates.
+| `company:mailing_address`             | Object            |           |        X |         | Company's mailing address
+| `company:mailing_address:street_1`    | String            |           |          |         | Mailing address's street 1 field. Required if mailing_address is provided.
+| `company:mailing_address:street_2`    | String            |           |        X |         | Mailing address's street 2 field.
+| `company:mailing_address:city`        | String            |           |          |         | Mailing address's city. Required if mailing_address is provided.
+| `company:mailing_address:zip`         | String            |           |          |         | Mailing address's zip code. Required if mailing_address is provided.
+| `company:mailing_address:state`       | String            |           |          |         | Mailing address's city. Required if mailing_address is provided.
+| `company:mailing_address:phone`       | String            |           |          |         | Mailing address location's phone number. Must be exactly ten digits. Required if mailing_address is provided.
+| `partner`                             | Object            |           |        X |         | Partnership information. If this field is specified then `name`, `company_id`, and `user_id` must be present.
+| `partner:company_id`                  | String            |           |          |         | Company ID on your platform, for linking with equivalent Gusto entity
+| `partner:user_id`                     | String            |           |          |         | User ID on your platform, for linking with equivalent Gusto entity
+| `partner:accounting_firm_id`          | String            |           |        X |         | ID of Accounting Firm that manages the company on your platform.
+
+## Create a new account
+
+**HTTP Method**: `POST`
+
+**Endpoint**: `/v1/accounts`
+
+**Returns**: OAuth authorization code for new user or errors which prevented
+             creation
+
+**Response Codes**: 201, 409, 422
+
+#### Sample Request Body:
+
+```json
+{
+  "user": {
+    "first_name": "Frank",
+    "last_name": "Ocean",
+    "email": "frank@example.com",
+    "phone": "2345558899"
+  },
+  "company": {
+    "name": "Frank's Walrus Emporium",
+    "trade_name": "Franklin Emporium",
+    "ein": "123456789",
+    "states": ["CA", "WA", "TN"]
+  },
+  "partner": {
+    "company_id": "112233445566",
+    "user_id": "abcdef1234",
+    "accounting_firm_id": "wxyz123456"
+  }
+}
+```
+
+#### Sample Response Body
+
+```json
+{
+  "authorization_code": "4a8a08f09d37b73795649038408b5f3333f5b80483094659737b73d90f80a8a4",
+  "user_id": 7757869449880258,
+  "company_id": 7757616923697256
+}
+```
+
+#### Collision Handling
+
+A collision happens when:
+a) A company with the same Federal EIN already exists in Gusto.
+b) A company with the same name and same payroll admin email address already exists in Gusto.
+
+If the partner provisioned both of the companies that are colliding, then a `409 (Conflict)` response will be returned.  If the partner did not provision the colliding company, then a new company will be created and a `201 (Created)` response will be returned.  If the collision is due to a duplicate EIN, the new company will be created with a blank EIN.  This will engage the small biz team at Gusto to resolve the colliding companies while allowing a normal provisioning flow to continue.
