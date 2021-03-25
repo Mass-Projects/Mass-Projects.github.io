@@ -19,6 +19,12 @@ body {
     font-family: 'Roboto', sans-serif;
 }
 
+.Status History {
+    color: white;
+    font-size: 20px;
+    font-family: 'Roboto', sans-serif;
+}
+
 .operational {
     color: #00ff62;
     text-shadow: 0px 0px 30px rgba(0, 255, 98, 0.36);
